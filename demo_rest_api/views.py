@@ -18,12 +18,12 @@ data_list.append({'id': str(uuid.uuid4()), 'name': 'User03', 'email': 'user03@ex
 class DemoRestApi(APIView):
     name = "Demo REST API"
 
-    def get(self, request):
+    def get(self, request, item_id=None):
 
         active_items = [item for item in data_list if item.get('is_active', False)]
         return Response(active_items, status = status.HTTP_200_OK)
        
-    def post(self, request):
+    def post(self, request, item_id=None):
         data = request.data
 
         if 'name' not in data or 'email' not in data:
@@ -35,8 +35,10 @@ class DemoRestApi(APIView):
 
         return Response({'message': 'Dato guardado exitosamente.', 'data': data}, status=status.HTTP_201_CREATED)
     
-    
-    def put(self, request, item_id):
+
+
+
+    def put(self, request, item_id=None):
         item = next((x for x in data_list if x['id'] == item_id), None)
         if not item:
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
@@ -49,7 +51,7 @@ class DemoRestApi(APIView):
         return Response({"message": "Usuario reemplazado con éxito", "data": item}, status=status.HTTP_200_OK)
 
     
-    def patch(self, request, item_id):
+    def patch(self, request, item_id=None):
         item = next((x for x in data_list if x['id'] == item_id), None)
         if not item:
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
@@ -62,7 +64,7 @@ class DemoRestApi(APIView):
         return Response({"message": "Usuario actualizado parcialmente", "data": item}, status=status.HTTP_200_OK)
 
     
-    def delete(self, request, item_id):
+    def delete(self, request, item_id=None):
         item = next((x for x in data_list if x['id'] == item_id), None)
         if not item:
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
