@@ -35,38 +35,38 @@ class DemoRestApi(APIView):
 
         return Response({'message': 'Dato guardado exitosamente.', 'data': data}, status=status.HTTP_201_CREATED)
     
-    # PUT: Reemplazo completo
+    
     def put(self, request, item_id):
         item = next((x for x in data_list if x['id'] == item_id), None)
         if not item:
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
         
-        # Actualizamos todos los campos excepto el ID
+        
         item['name'] = request.data.get('name')
         item['email'] = request.data.get('email')
         item['is_active'] = request.data.get('is_active')
         
         return Response({"message": "Usuario reemplazado con éxito", "data": item}, status=status.HTTP_200_OK)
 
-    # PATCH: Actualización parcial
+    
     def patch(self, request, item_id):
         item = next((x for x in data_list if x['id'] == item_id), None)
         if not item:
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
         
-        # Solo actualizamos lo que venga en la solicitud
+        
         item['name'] = request.data.get('name', item['name'])
         item['email'] = request.data.get('email', item['email'])
         item['is_active'] = request.data.get('is_active', item['is_active'])
         
         return Response({"message": "Usuario actualizado parcialmente", "data": item}, status=status.HTTP_200_OK)
 
-    # DELETE: Eliminación lógica
+    
     def delete(self, request, item_id):
         item = next((x for x in data_list if x['id'] == item_id), None)
         if not item:
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
         
-        # Eliminación lógica: en lugar de remove(), cambiamos el estado
+        
         item['is_active'] = False
         return Response({"message": f"Usuario {item_id} desactivado (eliminación lógica)"}, status=status.HTTP_200_OK)
