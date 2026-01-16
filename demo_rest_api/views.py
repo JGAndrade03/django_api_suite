@@ -18,12 +18,12 @@ data_list.append({'id': str(uuid.uuid4()), 'name': 'User03', 'email': 'user03@ex
 class DemoRestApi(APIView):
     name = "Demo REST API"
 
-    def get(self, request, item_id=None):
+    def get(self, request):
 
         active_items = [item for item in data_list if item.get('is_active', False)]
         return Response(active_items, status = status.HTTP_200_OK)
        
-    def post(self, request, item_id=None):
+    def post(self, request):
         data = request.data
 
         if 'name' not in data or 'email' not in data:
@@ -37,38 +37,48 @@ class DemoRestApi(APIView):
     
 
 
+class DemoRestApiItem(APIView):
+    name = "Demo Rest API Item"
 
-    def put(self, request, item_id=None):
-        item = next((x for x in data_list if x['id'] == item_id), None)
-        if not item:
-            return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
-        
-        
-        item['name'] = request.data.get('name')
-        item['email'] = request.data.get('email')
-        item['is_active'] = request.data.get('is_active')
-        
-        return Response({"message": "Usuario reemplazado con éxito", "data": item}, status=status.HTTP_200_OK)
+    def get(self, request, id):
+      for item in data_list:
+        if item['id'] == id:
+          return Response(item, status=status.HTTP_200_OK)
 
-    
-    def patch(self, request, item_id=None):
-        item = next((x for x in data_list if x['id'] == item_id), None)
-        if not item:
-            return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
-        
-        
-        item['name'] = request.data.get('name', item['name'])
-        item['email'] = request.data.get('email', item['email'])
-        item['is_active'] = request.data.get('is_active', item['is_active'])
-        
-        return Response({"message": "Usuario actualizado parcialmente", "data": item}, status=status.HTTP_200_OK)
+      return Response({'error': 'ID no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
-    
-    def delete(self, request, item_id=None):
-        item = next((x for x in data_list if x['id'] == item_id), None)
-        if not item:
-            return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, id):
+      data = request.data
+
+      for i in data_list:
+        if i.get('id') == id:
+          i['name'] = data.get('name', '')
+          i['email'] = data.get('email', '')
+          i['is_active'] = data.get('is_active', True)
+          return Response({'message': 'Dato actualizado exitosamente.', 'data': data}, status=status.HTTP_200_OK)
         
-        
-        item['is_active'] = False
-        return Response({"message": f"Usuario {item_id} desactivado (eliminación lógica)"}, status=status.HTTP_200_OK)
+      return Response({'mesage': 'ID no encontrado', 'data': data}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def patch(self, request, id):
+      data = request.data
+
+      for i in data_list:
+        if i.get('id') == id:
+          i['name'] = data.get('name', i['name'])
+          i['email'] = data.get('email', i['email'])
+          i['is_active'] = data.get('is_active', i['is_active'])
+          return Response({'message': 'Dato cambiado exitosamente.', 'data': data}, status=status.HTTP_200_OK)
+
+      return Response({'message': 'ID no encontrado', 'data': data}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request, id):
+      data = request.data
+
+      for i in data_list:
+        if i.get('id') == id:            
+          data_list.remove(i)
+      
+      return Response({'message': 'Dato eliminado exitosamente', 'data': data}, status=status.HTTP_200_OK)
