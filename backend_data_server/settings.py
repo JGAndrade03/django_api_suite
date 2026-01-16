@@ -15,6 +15,9 @@ import os
 import firebase_admin
 from firebase_admin import credentials
 
+import firebase_admin
+from firebase_admin import credentials
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,8 +46,8 @@ INSTALLED_APPS = [
     "firebase_admin",
     "rest_framework",
     "homepage",
-    "landing_api"
-    ""
+    "demo_rest_api",
+    "landing_api",
 ]
 
 MIDDLEWARE = [
@@ -128,8 +131,13 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, STATIC_URL),
 ]
 
+STATIC_ROOT = "assets/"
+
+
+# Coloque la ruta relativa al archivo con la clave privada
 FIREBASE_CREDENTIALS_PATH = credentials.Certificate("secrets/landing-key.json")
 
+# Inicialice la conexión con el Realtime Database con la clave privada y la URL de referencia
 firebase_admin.initialize_app(FIREBASE_CREDENTIALS_PATH, {
-   'databaseURL': 'https://<PROJECT-ID>-default-rtdb.firebaseio.com/'
+   'databaseURL': 'https://landing-tarea-default-rtdb.firebaseio.com/'
 })

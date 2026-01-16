@@ -1,29 +1,26 @@
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
 from firebase_admin import db
-import datetime
+from datetime import datetime
 
-class LandingAPI(APIview):
-    name= "Landing API"
-    collection_name= ""
 
-     def get(self, request):
+class LandingAPI(APIView):
+    name = "Landing API"
+    collection_name = "solicitudes"
 
-      # Referencia a la colección
-      ref = db.reference(f'{self.collection_name}')
+    def get(self, request):
+        # Referencia a la colección
+        ref = db.reference(f'{self.collection_name}')
 
-      # get: Obtiene todos los elementos de la col ección
-      data = ref.get()
+        # get: Obtiene todos los elementos de la col ección
+        data = ref.get()
 
-      # Devuelve un arreglo JSON
-      return Response(data, status=status.HTTP_200_OK)
+        # Devuelve un arreglo JSON
+        return Response(data, status=status.HTTP_200_OK)
 
-      
-   def post(self, request):
+    def post(self, request):
 
       data = request.data
 
